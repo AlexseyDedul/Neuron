@@ -20,7 +20,7 @@ namespace NeuronNetworks
             }
         }
 
-        public double FeesForward(List<double> inputs)
+        public double FeedForward(List<double> inputs)
         {
             //TODO: проверка на корректность входных данных
             var sum = 0.0;
@@ -37,6 +37,16 @@ namespace NeuronNetworks
         {
             var result = 1.0 / (1.0 + Math.Pow(Math.E, -x));
             return result;
+        }
+
+        public void SetWeights(params double[] weights)
+        {
+
+            //TODO: удалить после добавления возможности обучения сети
+            for(int i = 0; i < weights.Length; i++)
+            {
+                Weights[i] = weights[i];
+            }
         }
 
         public override string ToString()

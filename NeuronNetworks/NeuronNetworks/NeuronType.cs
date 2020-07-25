@@ -2,7 +2,7 @@
 {
     public enum NeuronType
     {
-        Imput = 0,
+        Input = 0,
         Normal = 1,
         Output = 2
     }
