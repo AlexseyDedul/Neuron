@@ -93,7 +93,7 @@ namespace NeuronNetworks
         {
             var inputNeurons = new List<Neuron>();
 
-            for(int i = 0; i < Topology.inputCount; i++)
+            for(int i = 0; i < Topology.InputCount; i++)
             {
                 var neuron = new Neuron(1, NeuronType.Input);
                 inputNeurons.Add(neuron);
