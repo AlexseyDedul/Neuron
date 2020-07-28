@@ -6,28 +6,52 @@ namespace NeuronNetworks
     public class Neuron
     {
         public List<double> Weights { get; } //Лист весов состояний
+        public List<double> Input { get; } //входные сигналы
         public NeuronType NeuronType { get; } //тип
         public double Output{ get; private set; } //сохранение результата
+        public double Delta { get; private set; }
 
         public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
         {
             NeuronType = type;
             Weights = new List<double>();
+            Input = new List<double>();
 
-            for(int i = 0; i < inputCount; i++)
+            InitWeightRandomValue(inputCount);
+        }
+
+        private void InitWeightRandomValue(int inputCount)
+        {
+            var rnd = new Random();
+
+            for (int i = 0; i < inputCount; i++)
             {
-                Weights.Add(1);
+                if(NeuronType == NeuronType.Input)
+                {
+                    Weights.Add(1); 
+                }
+                else
+                {
+                    Weights.Add(rnd.NextDouble());
+                }
+                Input.Add(0);
             }
         }
 
         public double FeedForward(List<double> inputs)
         {
+            for(int i = 0; i < inputs.Count; i++)
+            {
+                Input[i] = inputs[i];
+            }
+
             //TODO: проверка на корректность входных данных
             var sum = 0.0;
             for(int i = 0; i < inputs.Count; i++)
             {
                 sum += inputs[i] * Weights[i];
             }
+
             if (NeuronType != NeuronType.Input)
             {
                 Output = Sigmoid(sum);
@@ -45,13 +69,29 @@ namespace NeuronNetworks
             return result;
         }
 
-        public void SetWeights(params double[] weights)
+        private double SigmoidDx(double x)
         {
+            var sigmoid = Sigmoid(x);
+            var result = sigmoid / (1 - sigmoid);
+            return result;
+        }
 
-            //TODO: удалить после добавления возможности обучения сети
-            for(int i = 0; i < weights.Length; i++)
+        public void Learn(double error, double learningRate)
+        {
+            if(NeuronType == NeuronType.Input)
             {
-                Weights[i] = weights[i];
+                return;
+            }
+
+            Delta = error * SigmoidDx(Output);
+
+            for(int i = 0; i < Weights.Count; i++)
+            {
+                var weight = Weights[i];
+                var input = Input[i];
+
+                var newWeigth = weight - input * Delta * learningRate;
+                Weights[i] = newWeigth;    
             }
         }
 
