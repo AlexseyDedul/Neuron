@@ -22,6 +22,7 @@ namespace NeuronNetworks
 
         public Neuron FeedForward(params double[] inputSignals)
         {
+
             SendSignalsToInputNeurons(inputSignals);
             FeedForwardAllLayersAfterInput();
 
@@ -37,13 +38,15 @@ namespace NeuronNetworks
 
         public double Learn(double[] expected, double[,] inputs, int epoch)
         {
+            var signals = Normalization(inputs);
+
             var error = 0.0;
             for (int i = 0; i < epoch; i++)
             {
                 for (int j = 0; j < expected.Length; j++)
                 {
                     var output = expected[j];
-                    var input = GetRow(inputs, j);
+                    var input = GetRow(signals, j);
 
                     error += Backpropagation(output, input);
                 }
